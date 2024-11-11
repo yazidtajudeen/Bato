@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import logo from '../assets/images/logo.png'
+import logo from '@/assets/images/logo.png'
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -16,8 +16,8 @@ const Links = [
       name: 'Services', 
       url: '/Services',
       dropdownItems: [
-        { name: 'Emergency Support', url: 'Services/Emergency' },
-        { name: 'Access Midwives', url: 'Services/Midwives' }
+        { name: 'Emergency Support', url: '/Services/Emergency' },
+        { name: 'Access Midwives', url: '/Services/Midwives' }
       ]
     },
 ]
@@ -33,7 +33,12 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true)
-  }, [])
+    
+    // Handle initial redirect
+    if (window.location.pathname === '/') {
+      router.push('/Main')
+    }
+  }, [router])
 
   const handleClick = (linkName) => {
     if (openDropdown === linkName) {
@@ -50,9 +55,11 @@ const Navbar = () => {
       }
     }
 
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [openDropdown])
+    if (mounted) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [openDropdown, mounted])
 
   const handleSearchClick = () => {
     setIsSearchOpen(!isSearchOpen)
@@ -65,11 +72,12 @@ const Navbar = () => {
       }
     }
 
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [isSearchOpen])
+    if (mounted) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [isSearchOpen, mounted])
 
-  // Debounce function to prevent too many search requests
   const debounce = (func, wait) => {
     let timeout;
     return (...args) => {
@@ -78,7 +86,6 @@ const Navbar = () => {
     };
   };
 
-  // Search function
   const performSearch = useCallback(async (query) => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -86,7 +93,19 @@ const Navbar = () => {
     }
 
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error('Search failed:', response.status, response.statusText);
+        setSearchResults([]);
+        return;
+      }
+
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {
@@ -95,20 +114,17 @@ const Navbar = () => {
     }
   }, []);
 
-  
   const debouncedSearch = useCallback(
     debounce((query) => performSearch(query), 300),
     [performSearch]
   );
 
-  
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
     debouncedSearch(query);
   };
 
- 
   const handleResultClick = (url) => {
     router.push(url);
     setIsSearchOpen(false);
@@ -117,19 +133,19 @@ const Navbar = () => {
   };
 
   if (!mounted) {
-    return null
+    return null 
   }
 
   return (
     <nav className="flex justify-between items-center w-full px-6 py-4">
-      <Link href="/">
+      <Link href="/Main">
         <Image 
           src={logo} 
           alt="Logo" 
-          width={160}
-          height={50}
-          style={{ width: 'auto', height: '50px' }}
-          priority
+          width={200}
+          height={65}
+          priority={true}
+          className="h-[65px] w-auto"
         />
       </Link>
 
@@ -155,18 +171,19 @@ const Navbar = () => {
                 {openDropdown === link.name && (
                   <div 
                     id={`dropdown-${link.name}`}
-                    className="absolute left-0 mt-2 w-48 rounded-md shadow-transparent bg-[#E6E6E6] ring-1 ring-black ring-opacity-5"
+                    className="absolute left-0 mt-2 w-48 rounded-md shadow-transparent bg-[#E6E6E6] ring-1 ring-black ring-opacity-5 z-20"
                   >
                     <div className="py-1">
                       {link.dropdownItems.map((item) => (
                         <Link
                           key={item.name}
-                          href={`/${item.url}`}
+                          href={item.url}
                           className={`block px-4 py-2 text-sm font-medium ${
-                            pathname === '/' + item.url
+                            pathname === item.url
                               ? 'text-[#DFB3C0] font-bold'
                               : 'text-gray-700 hover:text-[#DFB3C0]'
                           }`}
+                          onClick={() => setOpenDropdown(null)}
                         >
                           {item.name}
                         </Link>
@@ -179,7 +196,7 @@ const Navbar = () => {
               <Link 
                 href={link.url}
                 className={`mx-2 transition-colors duration-200 font-medium ${
-                  pathname === link.url 
+                  pathname === link.url
                     ? 'text-[#DFB3C0] font-bold' 
                     : 'text-black hover:text-[#DFB3C0]'
                 }`}
@@ -204,7 +221,6 @@ const Navbar = () => {
             )}
           </button>
 
-          {/* Enhanced Search Popup */}
           {isSearchOpen && (
             <div className="absolute right-0 mt-1.5 w-80 bg-white rounded-lg shadow-lg p-4 z-50">
               <div className="relative">
@@ -219,7 +235,6 @@ const Navbar = () => {
                 <IoSearchOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="mt-2 max-h-60 overflow-y-auto">
                   {searchResults.map((result, index) => (
@@ -228,16 +243,26 @@ const Navbar = () => {
                       onClick={() => handleResultClick(result.url)}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md transition-colors duration-200"
                     >
-                      <div className="flex items-center">
-                        <IoSearchOutline className="mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-700">{result.title}</span>
+                      <div className="flex flex-col">
+                        {result.type === 'midwife' ? (
+                          <>
+                            <span className="text-sm font-medium text-[#AE4B68]">{result.details.name}</span>
+                            <span className="text-xs text-gray-600">{result.details.location}</span>
+                            <span className="text-xs text-gray-500">{result.details.phone}</span>
+                            <span className="text-xs text-gray-400">{result.details.specialties}</span>
+                          </>
+                        ) : (
+                          <div className="flex items-center">
+                            <IoSearchOutline className="mr-2 text-gray-400" />
+                            <span className="text-sm text-gray-700">{result.title}</span>
+                          </div>
+                        )}
                       </div>
                     </button>
                   ))}
                 </div>
               )}
 
-              {/* No Results Message */}
               {searchQuery && searchResults.length === 0 && (
                 <div className="mt-2 px-4 py-2 text-sm text-gray-500">
                   No results found
@@ -248,9 +273,13 @@ const Navbar = () => {
         </div>
         <span className='block text-center mt-2 font-medium ml-4'>
           Search
-          </span>
+        </span>
         <Link href="/SignUp">
-          <span className="block text-center mt-2 mx-10 text-black hover:text-[#DFB3C0] transition-colors duration-200 font-medium">
+          <span className={`block text-center mt-2 mx-10 transition-colors duration-200 font-medium ${
+            pathname === '/SignUp' 
+              ? 'text-[#DFB3C0] font-bold' 
+              : 'text-black hover:text-[#DFB3C0]'
+          }`}>
             Sign Up
           </span>
         </Link>

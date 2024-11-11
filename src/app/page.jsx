@@ -1,10 +1,13 @@
-import Main from "./Main/page";
-
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <>
-      <Main />
-    </>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/Main');
+  }, [router]);
+
+  return null;
 }
