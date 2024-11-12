@@ -8,39 +8,27 @@ import line from '@/assets/images/line.png'
 import doc from '@/assets/images/Doctors.png'
 import Gyn from '@/assets/images/Gyn.png'
 import { IoMdArrowForward } from "react-icons/io";
+import Circle from '@/Components/Circle';
+import { Mother } from '@/Components/Mother';
+import { FaUserNurse } from "react-icons/fa";
+import { MdEmergency } from "react-icons/md";
 
 const Main = () => {
   const images = [preg, black, Gyn];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [fade, setFade] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isTransitioning) {
-        setFade(true);
-        setTimeout(() => {
-          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-          setFade(false);
-        }, 300);
-      }
-    }, 5000);
+      setFade(true);
+      setTimeout(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        setFade(false);
+      }, 300);
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, [isTransitioning]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setIsTransitioning(true);
-      } else {
-        setIsTransitioning(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [images.length]);
 
   return (
     <div className='relative'>
@@ -70,7 +58,7 @@ const Main = () => {
         </Link>
       </div>
       <div className='' style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div className=''>
+        <div style={{paddingLeft:'5rem'}}>
           <span className='flex mt-14'>
             <Image
               src={line}
@@ -85,16 +73,52 @@ const Main = () => {
               </span>
             </h4>
           </span>
+          <span style={{display:'flex', marginLeft:'30px', marginTop:'5rem'}}>
+            <Circle icon={Mother} />
+            <h3 className='font-semibold mt-3 ml-4' style={{fontSize:'24px'}}>
+             Maternity Care
+            </h3>
+          </span>
+          <span className='font-normal mt-5' style={{fontSize:'16px'}}>
+            <p style={{marginLeft:'6.5em'}}
+            >Comprehensive support for expecting mothers.</p>
+          </span>
+        <span style={{display:'flex', marginLeft:'30px', marginTop:'5rem'}}>
+            <Circle icon={FaUserNurse} />
+            <h3 className='font-semibold mt-3 ml-4' style={{fontSize:'24px'}}>
+            Access to Skilled Midwives
+            </h3>
+          </span>
+          <span className='font-normal mt-5' style={{fontSize:'16px'}}>
+            <p style={{marginLeft:'6.5em'}}
+            >Our network of experienced midwives is ready to assist you.</p>
+          </span>
+          <span style={{display:'flex', marginLeft:'30px', marginTop:'5rem'}}>
+            <Circle icon={MdEmergency} />
+            <h3 className='font-semibold mt-3 ml-4' style={{fontSize:'24px'}}>
+           Emergency support
+            </h3>
+          </span>
+          <span className='font-normal mt-5' style={{fontSize:'16px'}}>
+            <p style={{marginLeft:'6.5em'}}
+            >provides instant access to nearby skilled midwives or emergency services,</p>
+          </span>
         </div>
-        <div className='mr-16 mt-24 p-10'>
+        <div className='mr-16 mt-20 p-10'>
           <Image
             src={doc}
-            width={500}
-            height={500}
+            width={800}
+            height={800}
             alt="doctors image"
             priority
           />
         </div>
+      </div>
+
+      <div className='mt-5'>
+        <span className=''>
+          
+      </span>
       </div>
     </div>
   )
