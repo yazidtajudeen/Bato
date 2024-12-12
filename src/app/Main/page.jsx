@@ -65,7 +65,7 @@ const Main = () => {
               width={50}
               height='auto'
               className='ml-10'
-              alt="Image of a pregnant woman and a nurse3"
+              alt="line icon"
             />
             <h4>
               <span className='font-medium ml-4' style={{ fontFamily: 'Barlow', fontSize: '40px' }}>
@@ -115,10 +115,26 @@ const Main = () => {
         </div>
       </div>
 
-      <div className='mt-5'>
-        <span className=''>
-          
-      </span>
+      <div className='mt-10 p-10'>
+        <span className='flex mt-14'>
+          <Image
+            src={line}
+            width={50}
+              height='auto'
+            className='ml-10'
+            alt='line icon'
+            priority
+          />
+          <h3 
+          >Find a Skilled Midwife</h3>
+        </span>
+        <span>
+          <Link href="/See-More">
+            <button>
+
+            </button>
+          </Link>
+        </span>
       </div>
     </div>
   )

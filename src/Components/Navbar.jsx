@@ -34,7 +34,7 @@ const Navbar = () => {
   useEffect(() => {
     setMounted(true)
     
-    // Handle initial redirect
+    
     if (window.location.pathname === '/') {
       router.push('/Main')
     }
