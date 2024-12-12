@@ -12,6 +12,7 @@ import Circle from '@/Components/Circle';
 import { Mother } from '@/Components/Mother';
 import { FaUserNurse } from "react-icons/fa";
 import { MdEmergency } from "react-icons/md";
+import { IoArrowForward } from "react-icons/io5";
 
 const Main = () => {
   const images = [preg, black, Gyn];
@@ -63,7 +64,7 @@ const Main = () => {
             <Image
               src={line}
               width={50}
-              height='auto'
+              height={50}
               className='ml-10'
               alt="line icon"
             />
@@ -108,7 +109,7 @@ const Main = () => {
           <Image
             src={doc}
             width={800}
-            height={800}
+            height="auto"
             alt="doctors image"
             priority
           />
@@ -116,26 +117,31 @@ const Main = () => {
       </div>
 
       <div className='mt-10 p-10'>
-        <span className='flex mt-14'>
-          <Image
-            src={line}
-            width={50}
-              height='auto'
-            className='ml-10'
-            alt='line icon'
-            priority
-          />
-          <h3 
-          >Find a Skilled Midwife</h3>
-        </span>
-        <span>
-          <Link href="/See-More">
-            <button>
-
+        <span className='flex mt-14 justify-between items-center'>
+          <div className='flex'>
+            <Image
+              src={line}
+              width={50}
+              height={50}
+              className='ml-10'
+              alt='line icon'
+              priority
+            />
+            <h3 className='font-medium ml-4' style={{ fontFamily: 'Barlow', fontSize: '40px' }}>
+              Find a Skilled Midwife
+            </h3>
+          </div>
+          <Link href="/Seemore">
+            <button className="see-more-btn">
+              <span>See More</span>
+              <IoArrowForward className="ml-2" />
             </button>
           </Link>
         </span>
       </div>
+      <span className='browse'>
+          <p>Browse through our network of experienced midwives.</p>
+        </span>
     </div>
   )
 }
