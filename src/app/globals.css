@@ -52,7 +52,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 10px 30px;
+  padding: 12px 30px;
   border: 1px solid #AE4B68;
   color: #AE4B68;
   font-family: 'Poppins', sans-serif;
@@ -60,10 +60,10 @@ body {
   background: transparent;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 1.5px;
+  margin-top: 2px;
   overflow: hidden;
   z-index: 1;
-  margin-right: 70px;
+  margin-right: 65px;
 }
 
 .see-more-btn::before {
@@ -94,10 +94,8 @@ body {
 .browse p {
   font-size: 16px;
   font-weight: normal;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-
-  margin-left: 20px;
+  margin-top: 1.5em;
+  margin-left: 6.2rem;
 }
 
 
@@ -105,4 +103,112 @@ body {
   width: auto;
   height: auto;
   max-width: 100%;
+}
+
+.midwife-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 300px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.midwife-card:hover {
+  box-shadow: 0 15px 30px rgba(174, 75, 104, 0.2);
+  transform: translateY(-5px);
+}
+
+.image-container {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.midwife-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.midwife-info {
+  text-align: center;
+}
+
+.midwife-info .name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.midwife-info .profession {
+  color: var(--primary);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.midwife-info .location {
+  color: #666;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.book-btn {
+  background: var(--primary);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.book-btn:hover {
+  background: var(--secondary);
+}
+
+.doctor-cards-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.doctor-cards-container::-webkit-scrollbar {
+  display: none;
+}
+
+.doctor-cards-container > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.doc-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.doc-card:hover {
+  box-shadow: 0 10px 20px rgba(174, 75, 104, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Add styles for the navigation buttons */
+.nav-button {
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

@@ -7,6 +7,7 @@ import logo from '@/assets/images/logo.png'
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { supabase } from '@/lib/supabase'
 
 const Links = [
     { name: 'Home', url: '/Main' },
@@ -29,6 +30,7 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -78,51 +80,20 @@ const Navbar = () => {
     }
   }, [isSearchOpen, mounted])
 
-  const debounce = (func, wait) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  };
-
-  const performSearch = useCallback(async (query) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
+  const handleSearchChange = async (e) => {
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        console.error('Search failed:', response.status, response.statusText);
-        setSearchResults([]);
-        return;
-      }
-
-      const data = await response.json();
-      setSearchResults(data);
+      const searchTerm = e.target.value;
+      // Your search logic here
+      
+      // If you're making an API call:
+      // const response = await fetch(...);
+      // const data = await response.json();
+      
     } catch (error) {
-      console.error('Search error:', error);
-      setSearchResults([]);
+      // Properly handle the error
+      console.log('Search error:', error.message);
+      // Optionally set an error state or show user feedback
     }
-  }, []);
-
-  const debouncedSearch = useCallback(
-    debounce((query) => performSearch(query), 300),
-    [performSearch]
-  );
-
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    debouncedSearch(query);
   };
 
   const handleResultClick = (url) => {
@@ -222,52 +193,61 @@ const Navbar = () => {
           </button>
 
           {isSearchOpen && (
-            <div className="absolute right-0 mt-1.5 w-80 bg-white rounded-lg shadow-lg p-4 z-50">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search..."
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-[#DFB3C0]"
-                  autoFocus
-                />
-                <IoSearchOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="absolute inset-0 bg-black opacity-70" onClick={handleSearchClick}></div>
+              <div className="w-80 bg-white rounded-lg shadow-lg p-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search midwives..."
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#AE4B68]"
+                    autoFocus
+                  />
+                  <IoSearchOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                </div>
+
+                {searchResults.length > 0 && (
+                  <div className="mt-2 max-h-60 overflow-y-auto">
+                    {searchResults.map((result, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleResultClick(result.url)}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                      >
+                        <div className="flex flex-col">
+                          {result.type === 'midwife' ? (
+                            <>
+                              <span className="text-sm font-medium text-[#AE4B68]">{result.details.name}</span>
+                              <span className="text-xs text-gray-600">{result.details.location}</span>
+                              <span className="text-xs text-gray-500">{result.details.phone}</span>
+                              <span className="text-xs text-gray-400">{result.details.specialties}</span>
+                            </>
+                          ) : (
+                            <div className="flex items-center">
+                              <IoSearchOutline className="mr-2 text-gray-400" />
+                              <span className="text-sm text-gray-700">{result.title}</span>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {searchQuery && searchResults.length === 0 && (
+                  <div className="mt-2 px-4 py-2 text-sm text-gray-500">
+                    No results found
+                  </div>
+                )}
+
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#AE4B68] border-t-transparent"></div>
+                  </div>
+                )}
               </div>
-
-              {searchResults.length > 0 && (
-                <div className="mt-2 max-h-60 overflow-y-auto">
-                  {searchResults.map((result, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleResultClick(result.url)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md transition-colors duration-200"
-                    >
-                      <div className="flex flex-col">
-                        {result.type === 'midwife' ? (
-                          <>
-                            <span className="text-sm font-medium text-[#AE4B68]">{result.details.name}</span>
-                            <span className="text-xs text-gray-600">{result.details.location}</span>
-                            <span className="text-xs text-gray-500">{result.details.phone}</span>
-                            <span className="text-xs text-gray-400">{result.details.specialties}</span>
-                          </>
-                        ) : (
-                          <div className="flex items-center">
-                            <IoSearchOutline className="mr-2 text-gray-400" />
-                            <span className="text-sm text-gray-700">{result.title}</span>
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {searchQuery && searchResults.length === 0 && (
-                <div className="mt-2 px-4 py-2 text-sm text-gray-500">
-                  No results found
-                </div>
-              )}
             </div>
           )}
         </div>
