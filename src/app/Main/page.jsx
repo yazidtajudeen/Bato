@@ -235,16 +235,17 @@ const Main = () => {
              <h2 style={{ fontFamily: 'Barlow', fontSize: '45px' }} >Compassionate Care, 
           </h2>
             <span>
-               <h2 style={{ fontFamily: 'Barlow', fontSize: '45px', marginLeft:'3.7em' , fontWeight: '400' }}>Help Dea Near!!</h2> 
-              <Image
+              <h2 style={{ fontFamily: 'Barlow', fontSize: '45px', marginLeft: '3.7em', fontWeight: '400' }}>Help Dea Near!!</h2> 
+              <div className='pl-12'><Image
                 src={arrow}
                 alt='arrow'
                 width={150}
                 height={150}
                 priority
-                style={{marginLeft:'18rem'}}
-              /></span>
-            <p style={{fontFamily:'Poppins', fontWeight:'normal',fontSize:'18px',marginTop:'4em', letterSpacing:'0.4px'}} >At Bato, we connect pregnant women with certified midwives and emergency <br />
+                style={{marginLeft:'17rem'}}
+              /></div>
+            </span>
+            <p style={{fontFamily:'Poppins', fontWeight:'normal',fontSize:'20px',marginTop:'4em', letterSpacing:'0.4px'}} >At Bato, we connect pregnant women with certified midwives and emergency <br />
               services, ensuring timely and compassionate care. From guidance to critical <br />
               support, we’re here to keep you and your baby safe. Let us support you every <br />
               step of the way.</p>

@@ -41,7 +41,7 @@ const Loader = ({ onLoadingComplete }) => {
           }
         });
       }
-    }, 4000);
+    }, 5000);
 
     const networkCheck = setInterval(() => {
       if (checkResourcesLoaded()) {

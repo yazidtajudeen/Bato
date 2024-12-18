@@ -7,7 +7,8 @@ import logo from '@/assets/images/logo.png'
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'; // Import your Supabase client
+
 
 const Links = [
     { name: 'Home', url: '/Main' },
@@ -81,18 +82,27 @@ const Navbar = () => {
   }, [isSearchOpen, mounted])
 
   const handleSearchChange = async (e) => {
-    try {
-      const searchTerm = e.target.value;
-      // Your search logic here
-      
-      // If you're making an API call:
-      // const response = await fetch(...);
-      // const data = await response.json();
-      
-    } catch (error) {
-      // Properly handle the error
-      console.log('Search error:', error.message);
-      // Optionally set an error state or show user feedback
+    const searchTerm = e.target.value;
+    setSearchQuery(searchTerm); // Update the searchQuery state
+
+    if (searchTerm.length > 2) { // Fetch results only if the search term is longer than 2 characters
+        try {
+            const { data, error } = await supabase
+                .from('midwives') // Replace with your actual table name
+                .select('*')
+                .ilike('fullname', `%${searchTerm}%`); // Adjust the column name as needed
+
+            if (error) {
+                console.error('Error fetching midwives:', error.message); // Log the error message
+                return;
+            }
+
+            setSearchResults(data); // Set the search results
+        } catch (error) {
+            console.error('Search error:', error.message);
+        }
+    } else {
+        setSearchResults([]); // Clear results if search term is too short
     }
   };
 
